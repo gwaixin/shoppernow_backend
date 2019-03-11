@@ -64,7 +64,18 @@ router.post('/users', (req, res) => {
 })
 
 // update user here
-// router.put()
+router.put('/users', (req, res) => {
+
+    User.findOneAndUpdate({
+        _id: mongoose.Types.ObjectId(req.body._id)
+    }, req.body, { new: true }, (err, user) => {
+        if (err) return res.json({ status: false, error: err })
+
+
+        // otherwise return success result
+        res.json({ status: true, user: user})
+    })
+})
 
 // delete user here
 // router.delete()

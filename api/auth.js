@@ -28,4 +28,9 @@ router.post('/auth/signin', (req, res) => {
         })
 })
 
+// auth check
+router.post('/auth/check', (req, res) => {
+    res.json({ status: true, user: req.user })
+})
+
 module.exports = router
