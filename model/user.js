@@ -104,6 +104,10 @@ UserSchema.methods.comparePassword = (upassword, password) => {
     return (decrypt(upassword) == password)
 }
 
+UserSchema.methods.encryptPassword = (password) => {
+    return encrypt(password)
+}
+
 
 
 module.exports = mongoose.model('User', UserSchema)
