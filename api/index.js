@@ -8,6 +8,8 @@ const departments = require('./departments')
 const users = require('./users')
 const auth = require('./auth')
 const carts = require('./carts')
+const orders = require('./orders')
+
 const authenticating = require('../middlewares/authenticating')
 
 
@@ -24,6 +26,7 @@ api.use(departments)
 api.use(users)
 api.use(auth)
 api.use(carts)
+api.use(orders)
 
 api.get('/test', (req, res) => {
     res.json({response: true, message: 'testing only'})
