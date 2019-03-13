@@ -31,6 +31,19 @@ router.get('/orders/shippings', (req, res) => {
     })
 })
 
+router.get('/orders', (req, res) => {
+
+    if (!req.user) return res.json({ status: false, message: 'No user found' })
+
+    Order
+        .find({user: req.user._id})
+        .exec((err, data) => {
+        if (err) return res.json({ status: false, error: err })
+
+        res.json({ status: true, orders: data })
+    })
+})
+
 router.post('/orders', (req, res) => {
     if (!req.user) return res.json({ status: false, message: 'No user found' })
 
