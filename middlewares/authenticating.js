@@ -1,4 +1,3 @@
-const User = require('../model/User')
 const jwt = require('jsonwebtoken')
 
 const authenticating = function (req, res, next) {
@@ -8,12 +7,12 @@ const authenticating = function (req, res, next) {
         jwt.verify(token, 'vfr4nhy6', function (err, payload) {
 
             if (payload) {
-                User.findOne(payload._id).then(
-                    (doc)=>{
-                        req.user=doc;
-                        next()
-                    }
-                )
+                // User.findOne(payload._id).then(
+                //     (doc)=>{
+                //         req.user=doc;
+                //         next()
+                //     }
+                // )
             } else {
                next()
             }

@@ -1,96 +1,50 @@
 const { Router } = require('express')
 const router = Router()
-const mongoose = require('mongoose')
-
-const Cart = require('../model/cart')
+const { connection, ShoppingCart, Product } = require('../database')
 
 // get cart
 router.get('/cart', (req, res) => {
-    console.log('here 1')
-    if (!req.user) return res.json({ status: false, message: 'No user found' })
 
-    console.log('here 2')
-    Cart
-        .find({ user_id: mongoose.Types.ObjectId(req.user._id) })
-        .populate('attributes')
-        .populate({
-            path: 'product_id',
-            populate: {
-                path: 'attributes',
-                model: 'Attribute'
-            }
+    ShoppingCart
+        .findAll({
+            include: [Product],
+            where: {cart_id: req.query.cart_id}
         })
-        .sort('-date')
-        .exec((err, data) => {
-            console.log('here 3')
-            if (err) return res.json({ status: false, error: err })
-            console.log('here 4')
+        .then(data => {
             res.json({ status: true, cart: data })
         })
+
 })
 
 // add cart
 router.post('/cart', (req, res) => {
 
-    if (!req.user) return res.json({ status: false, message: 'No user found' })
-
-    const cart = new Cart({
-        product_id: mongoose.Types.ObjectId(req.body.product),
-        user_id: mongoose.Types.ObjectId(req.user._id),
-        attributes: [mongoose.Types.ObjectId(req.body.color), mongoose.Types.ObjectId(req.body.size)],
-        quantity: req.body.quantity,
-    })
-
-    cart.save((err, data) => {
-        if (err) return res.json({ status: false, error: err })
-
+    connection.query(
+        'CALL shopping_cart_add_product (:inCartId, :inProductId, :inAttributes ) ',
+        { replacements: req.body} )
+    .then(data => {
         res.json({ status: true, cart: data })
     })
+
 })
 
 router.put('/cart', (req, res) => {
-    Cart.findOneAndUpdate({
-        // query by id
-        _id: mongoose.Types.ObjectId(req.body.id)
 
-    // update data
-    }, {
-        attributes: [mongoose.Types.ObjectId(req.body.color), mongoose.Types.ObjectId(req.body.size)],
-        quantity: req.body.quantity
-        // buy_now TODO
-    
-    // response
-    }, { new: true }, err => {
-        if (err) return res.json({ status: false, error: err })
-
-        // find cart with populated data
-        Cart
-        .findOne({ _id: mongoose.Types.ObjectId(req.body.id) })
-        .populate('attributes')
-        .populate({
-            path: 'product_id',
-            populate: {
-                path: 'attributes',
-                model: 'Attribute'
-            }
-        })
-        .exec((err, item) => {
-            if (err) return res.json({ status: false, error: err })
-
-            res.json({ status: true, item: item})
-        })
+    connection.query(
+        'CALL shopping_cart_update (:inItemId, :inQuantity)',
+        { replacements: { inItemId: req.body.item_id, inQuantity: req.body.quantity }}
+    ).then(data => {
+        res.json({ status: true, item: data })
     })
 })
 
 // remove cart
 router.delete('/cart/:id', (req, res) => {
 
-
-    Cart.findOneAndDelete({
-        _id: mongoose.Types.ObjectId(req.params.id)
-    }, err => {
-        if (err) return res.json({ status: true, error: err })
-
+    connection.query(
+        'CALL shopping_cart_remove_product (:inItemId) ',
+        { replacements: { inItemId: req.params.id }} )
+    .then(data => {
         res.json({ status: true })
     })
 })

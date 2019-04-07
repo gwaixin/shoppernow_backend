@@ -1,17 +1,30 @@
-// category_id
-// department_id
-// name
-// description
+module.exports = (sequelize, DataType) => {
 
-const mongoose = require('mongoose')
-const Schema = mongoose.Schema
+	const Category = sequelize.define('Category', {
+		// SETS CATEGORY ATTRIBUTES
+		category_id: { type: DataType.INTEGER, primaryKey: true },
+		department_id: { type: DataType.INTEGER },
+		// department: { type: DataType.OBJECT, defaultValue: {} },
+		name: { type: DataType.STRING, allowNull: false },
+		description: { type: DataType.TEXT, allowNull: false },
 
-// category properties and validators
-var categorySchema = new Schema({
-    category_id: { type: Number },
-    department: { type: Schema.Types.ObjectId, ref: 'Department' },
-    name: { type: String, required: true },
-    description: { type: String, required: true },
-})
+	}, {
 
-module.exports = mongoose.model('Category', categorySchema)
+		// SETS CATEGORY CONFIG
+
+		// no timestamp
+		timestamps: false,
+		// disable the modification of tablenames;
+		freezeTableName: true,
+		// define the table's name
+		tableName: 'category',
+
+		// sets index
+		// indexes: [{
+		// 	// unique: true,
+		// 	// fields: ['department_id']
+		// }],
+	})
+
+	return Category
+}

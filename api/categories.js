@@ -1,21 +1,13 @@
 const { Router } = require('express')
 const router = Router()
+const { Category, Department } = require('../database')
 
-let Category = require('../model/Category')
+// let Category = require('../model/Category')
 
 // list all category here
 router.get('/categories', (req, res) => {
-    Category.find({}).exec((err, data) => {
-
-        if (err) { 
-            res.json({ status: false, error: err })
-
-        } else {
-            res.json({
-                status: true,
-                categories: data
-            })
-        }
+    Category.findAll({ include: [ Department ] }).then(data => {
+        res.json({ status: true, categories: data })
     })
 })
 

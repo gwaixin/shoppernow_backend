@@ -1,16 +1,28 @@
-// department_id
-// name
-// description
+module.exports = (sequelize, DataType) => {
 
-const mongoose = require('mongoose')
-const Schema = mongoose.Schema
+	const Department = sequelize.define('Department', {
+		// SETS DEPARTMENT ATTRIBUTES
+		department_id: { type: DataType.INTEGER, primaryKey: true },
+		name: { type: DataType.STRING, allowNull: false },
+		description: { type: DataType.TEXT, allowNull: false }
 
-// department properties and validators
-var departmentSchema = new Schema({
-    department_id: { type: Number },
-    name: { type: String, required: true },
-    description: { type: String, required: true }
-})
+	}, {
 
+		// SETS DEPARTMENT CONFIG
 
-module.exports = mongoose.model('Department', departmentSchema)
+		// no timestamp
+		timestamps: false,
+		// disable the modification of tablenames;
+		freezeTableName: true,
+		// define the table's name
+		tableName: 'department',
+
+		// sets index
+		// indexes: [{
+		// 	// unique: true,
+		// 	// fields: ['department_id']
+		// }],
+	})
+
+	return Department
+}

@@ -1,7 +1,7 @@
 const express = require('express')
 const api = express()
 
-const seeder = require('./seeder/index')
+// const seeder = require('./seeder/index')
 const products = require('./products')
 const categories = require('./categories')
 const departments = require('./departments')
@@ -14,7 +14,7 @@ const authenticating = require('../middlewares/authenticating')
 
 
 // api seeders
-api.use(seeder)
+// api.use(seeder)
 
 // middleware handshake auth if provided
 api.use(authenticating)
