@@ -17,10 +17,7 @@ $ git clone https://github.com/gwaixin/shoppernow_backend.git
 $ npm install
 ```
 
-3. Start mongod
-```sh
-$ mongod --dbpath='c:/data/db'
-```
+3. Create database name shoppernow and import this ```shoppernow.sql``` in to your mysql database
 
 4. Start with nodemon
 ```sh
