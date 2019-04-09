@@ -11,6 +11,12 @@ const AttributeModel = require("./model/Attribute")
 const AttributeValueModel = require("./model/AttributeValue")
 const DepartmentModel = require("./model/Department")
 const ShoppingCartModel = require("./model/ShoppingCart")
+const CustomerModel = require("./model/Customer")
+const ShippingModel = require("./model/Shipping")
+const ShippingRegionModel = require("./model/ShippingRegion")
+const TaxModel = require("./model/Tax")
+const OrderModel = require("./model/Order")
+const OrderDetailModel = require("./model/OrderDetail")
 
 const DBHOST = process.env.DB_HOST || 'localhost'
 const DBPORT = process.env.DB_PORT || 3306
@@ -58,6 +64,13 @@ const ProductAttribute = ProductAttributeModel(db, sequelize)
 const Attribute = AttributeModel(db, sequelize)
 const AttributeValue = AttributeValueModel(db, sequelize)
 const ShoppingCart = ShoppingCartModel(db, sequelize)
+const Customer = CustomerModel(db, sequelize)
+const Shipping = ShippingModel(db, sequelize)
+const ShippingRegion = ShippingRegionModel(db, sequelize)
+const Tax = TaxModel(db, sequelize)
+const Order = OrderModel(db, sequelize)
+const OrderDetail = OrderDetailModel(db, sequelize)
+
 
 // relation 
 Product.hasMany(ProductCategory, { foreignKey: 'product_id' })
@@ -67,7 +80,10 @@ AttributeValue.belongsTo(Attribute, { foreignKey: 'attribute_id' })
 ProductCategory.belongsTo(Category, { foreignKey: 'category_id' })
 Category.belongsTo(Department, { foreignKey: 'department_id'})
 ShoppingCart.belongsTo(Product, { foreignKey: 'product_id' })
-
+Order.hasMany(OrderDetail, { foreignKey: 'order_id' })
+Order.hasOne(Customer, { foreignKey: 'customer_id' })
+Order.belongsTo(Shipping, { foreignKey: 'shipping_id' })
+Order.belongsTo(Tax, { foreignKey: 'tax_id' })
 
 /* try connecting to the database */
 
@@ -93,6 +109,12 @@ module.exports = {
 	AttributeValue,
 	Attribute,
 	ShoppingCart,
+	Customer,
+	Shipping,
+	ShippingRegion,
+	Tax,
+	Order,
+	OrderDetail,
 
 	sequelize: sequelize,
 	connection: db,

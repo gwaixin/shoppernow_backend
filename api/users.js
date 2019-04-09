@@ -1,6 +1,7 @@
 const { Router } = require('express')
-// const mongoose = require('mongoose')
 const router = Router()
+const { connection, Customer } = require('../database')
+const jwt = require('jsonwebtoken')
 
 // const User = require('../model/User')
 
@@ -47,6 +48,27 @@ router.post('/users', (req, res) => {
         return res.json({ status: false, message: 'Password does not match'})
     }
 
+    const data = {
+        inName: req.body.name,
+        inEmail: req.body.email,
+        inPassword: req.body.password
+    }
+
+    connection.query(
+        'CALL customer_add (:inName, :inEmail, :inPassword)',
+        { replacements: data }
+    )
+    // success
+    .then(data => {
+        res.json({ status: true, user: data })
+    })
+
+    // error
+    .catch(err => {
+        // print the error details
+        res.json({ status: false, error: err })
+    })
+
 
     // var user = new User({
     //     name: req.body.name,
@@ -65,6 +87,29 @@ router.post('/users', (req, res) => {
 
 // update user here
 router.put('/users', (req, res) => {
+
+    Customer.update(req.body, {
+        where: { customer_id: req.body.customer_id }
+    })
+
+    .then(data => {
+        if (data) {
+
+            let token = jwt.sign({
+                customer: req.body
+            }, 'vfr4nhy6', { 
+                expiresIn : 60*60*2 // 2 hours
+            })
+
+            res.json({ status: true, user: req.body, token: token})
+        } else {
+            throw new Error("customer not found");
+        }
+    })
+
+    .catch(err => {
+        res.json({ status: false, error: err })
+    })
 
     // User.findOneAndUpdate({
     //     _id: mongoose.Types.ObjectId(req.body._id)

@@ -1,4 +1,5 @@
 const jwt = require('jsonwebtoken')
+const { Customer } = require('../database')
 
 const authenticating = function (req, res, next) {
     try {
@@ -7,6 +8,9 @@ const authenticating = function (req, res, next) {
         jwt.verify(token, 'vfr4nhy6', function (err, payload) {
 
             if (payload) {
+                
+                req.customer = payload.customer
+                next()
                 // User.findOne(payload._id).then(
                 //     (doc)=>{
                 //         req.user=doc;
