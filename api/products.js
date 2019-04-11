@@ -19,6 +19,7 @@ router.get('/products', (req, res) => {
     var query = {}
     var limit = 50
     var page = 1
+    var categoryWhere = {}
 
 
     // search by keywords
@@ -33,7 +34,8 @@ router.get('/products', (req, res) => {
 
     // check filtered category
     if (req.query.categories) {
-        query.category = { "$in" : req.query.categories }  
+        categoryWhere.category_id = { [sequelize.Op.in]: req.query.categories }
+        // query.Catego
     }
 
 
@@ -50,18 +52,25 @@ router.get('/products', (req, res) => {
     // sets relationship here
     // Product.hasMany(Category)
 
-    Product.paginate({
+    Product.findAndCountAll({
         include: [{
                 model: ProductCategory, 
                 include: [
                     { model: Category, include: [ Department ] }
-                ]  
+                ],
+                where: categoryWhere,
+                // required: true
         }],
-        page: page,
-        paginate: limit,
+        offset: page-1,
+        limit: limit,
         where: query
     }).then(data => {
-        res.json({ status: true, result: data })
+        res.json({ status: true, result: data, limit: limit })
+    })
+
+    .catch(err => {
+        console.log('error : ', err)
+        res.json({ status: false, error: err })
     })
 })
 

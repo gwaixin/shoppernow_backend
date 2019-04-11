@@ -16,13 +16,18 @@ router.post('/auth/signin', (req, res) => {
 
     // success
     .then(user => {
-        let token = jwt.sign({
-            customer: user
-        }, 'vfr4nhy6', { 
-            expiresIn : 60*60*2 // 2 hours
-        })
 
-        res.json({ status: true, message: 'Signin success', token: token })
+        if (user) {
+            let token = jwt.sign({
+                customer: user
+            }, 'vfr4nhy6', { 
+                expiresIn : 60*60*2 // 2 hours
+            })
+
+            res.json({ status: true, message: 'Signin success', token: token })
+        } else {
+            res.json({ status: false, message: 'Email and passwords does not match' })
+        }
     })
 
     // error

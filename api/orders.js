@@ -34,7 +34,7 @@ router.get('/orders/shippings', (req, res) => {
 
 router.get('/orders', (req, res) => {
 
-    if (!req.customer) return res.json({ status: false, message: 'No user found', code: 401 })
+    if (!req.customer) return res.json({ status: false, message: 'No user found' })
 
     Order
     .findAll({ 
@@ -137,7 +137,7 @@ router.put('/orders', (req, res) => {
 })
 
 router.post('/orders', (req, res) => {
-    if (!req.customer) return res.json({ status: false, message: 'No user found' })
+    if (!req.customer) return res.json({ status: false, message: 'No user found' + req.customer })
 
     const order = req.body
     order.inCustomerId = req.customer.customer_id
