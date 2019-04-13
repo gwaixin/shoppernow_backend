@@ -11,7 +11,7 @@ router.get('/cart', (req, res) => {
             where: {cart_id: req.query.cart_id}
         })
         .then(data => {
-            res.json({ status: true, cart: data })
+            res.json({ status: true, cart: data, customer: req.customer })
         })
 
 })

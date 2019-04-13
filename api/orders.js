@@ -39,7 +39,10 @@ router.get('/orders', (req, res) => {
     Order
     .findAll({ 
         include: [OrderDetail, Shipping, Tax],
-        where: {customer_id: parseInt(req.customer.customer_id)} 
+        order: [
+            ['order_id', 'DESC'],
+        ],
+        where: {customer_id: parseInt(req.customer.customer_id)}
     })
 
     // success 
@@ -149,7 +152,18 @@ router.post('/orders', (req, res) => {
 
     // sucess
     .then(data => {
-        res.json({ status: true, order: data })
+        if (data) {
+            let orderId = data[0].orderId
+
+            Order.find({
+                where: { order_id: orderId },
+                include: [OrderDetail, Shipping, Tax]
+            }).then(order => {
+                res.json({ status: true, order: order })
+            })
+        } else {
+            res.json({ status: false, message: 'There seems to be an error', data: data })
+        }
     })
 
     // fail
