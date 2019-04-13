@@ -34,7 +34,7 @@ router.get('/orders/shippings', (req, res) => {
 
 router.get('/orders', (req, res) => {
 
-    if (!req.customer) return res.json({ status: false, message: 'No user found' })
+    if (!req.customer) return res.json({ status: false, message: 'No user found', code: 401 })
 
     Order
     .findAll({ 
